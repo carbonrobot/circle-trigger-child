@@ -82,6 +82,8 @@ jobs:
       - checkout
       - run: |
           echo "//npm.pkg.github.com/:_authToken=$GH_NPM_TOKEN" > ~/.npmrc
+          git config --global user.email "carbonrobot@gmail.com"
+          git config --global user.name "carbonrobot"
           ~/project/merp.sh << pipeline.parameters.version >>
 
   automerge:

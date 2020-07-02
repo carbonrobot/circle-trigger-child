@@ -18,15 +18,22 @@ jobs:
       - image: alpine
     steps:
       - run: echo "pr"
+
   update-packages:
     docker:
       - image: alpine
     steps:
-      - run: echo "updating packages"
+      - run: ~/project/merp.sh
+
+  automerge:
+    docker:
+      - image: alpine
+    steps:
+      - run: echo "pr"
 
 # Workflows
 workflows:
-  update packages:
+  update-packages:
     when:
       equal: [<< pipeline.parameters.remote_trigger >>, 'update-packages']
     jobs:
@@ -41,6 +48,13 @@ workflows:
           filters:
             branches:
               ignore: master
+      - automerge:
+          filters:
+            branches:
+              only:
+                - /^rbibot\/rbilabs\/.*/
+          requires:
+            - pr
 
   master:
     when:

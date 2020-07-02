@@ -6,6 +6,9 @@ parameters:
     type: enum
     enum: ['default', 'update-packages']
     default: 'default'
+  version:
+    type: string
+    default: ''
 
 jobs:
   build:
@@ -23,13 +26,17 @@ jobs:
     docker:
       - image: alpine
     steps:
-      - run: ~/project/merp.sh
+      - run: ~/project/merp.sh << pipeline.parameters.version >>
 
   automerge:
     docker:
       - image: alpine
     steps:
-      - run: echo "pr"
+      - checkout
+      - run: |
+          git checkout master
+          git merge $CIRCLECI_BRANCH
+          git push
 
 # Workflows
 workflows:

@@ -1,8 +1,8 @@
 #! /bin/bash -e
 
 # env secrets
-CIRCLE_PROJECT_REPONAME:-circle-trigger-child
-CIRCLE_PROJECT_USERNAME:-carbonrobot
+CIRCLE_PROJECT_REPONAME=circle-trigger-child
+CIRCLE_PROJECT_USERNAME=carbonrobot
 
 # configuration
 reponame=${CIRCLE_PROJECT_REPONAME}

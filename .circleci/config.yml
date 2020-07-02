@@ -77,7 +77,7 @@ jobs:
 
   update-packages:
     docker:
-      - image: circleci/node:12.18.0
+      - image: circleci/node:latest
     steps:
       - checkout
       - add_ssh_keys:
@@ -89,7 +89,7 @@ jobs:
 
   automerge:
     docker:
-      - image: circleci/node:12.18.0
+      - image: circleci/node:latest
     steps:
       - checkout
       - add_ssh_keys:

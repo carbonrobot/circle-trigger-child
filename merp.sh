@@ -59,7 +59,7 @@ if [ -z "$branch" ]; then
   echo "No out of date branches found"
 else
   echo "Out of date branch(es) found"
-  git for-each-ref --format='%(refname:lstrip=3)' "refs/remotes/origin/$prefix" | check_delete
+  git for-each-ref --format='%(refname:strip=3)' "refs/remotes/origin/$prefix" | check_delete
 fi
 
 # Create a pull request for the changes

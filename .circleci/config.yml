@@ -77,7 +77,7 @@ jobs:
 
   update-packages:
     docker:
-      - image: circleci/nodejs
+      - image: circleci/node:12.18.0
     steps:
       - checkout
       - run: ~/project/merp.sh << pipeline.parameters.version >>

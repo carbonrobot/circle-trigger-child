@@ -80,7 +80,9 @@ jobs:
       - image: circleci/node:12.18.0
     steps:
       - checkout
-      - run: ~/project/merp.sh << pipeline.parameters.version >>
+      - run: |
+          echo "//npm.pkg.github.com/:_authToken=$GH_NPM_TOKEN" > ~/.npmrc
+          ~/project/merp.sh << pipeline.parameters.version >>
 
   automerge:
     docker:

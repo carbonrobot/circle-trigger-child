@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/sh -e
 
 # env secrets
 CIRCLE_PROJECT_REPONAME=circle-trigger-child

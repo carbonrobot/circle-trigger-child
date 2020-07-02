@@ -4,8 +4,8 @@ version: 2.1
 parameters:
   remote_trigger:
     type: enum
-    enum: ['null', 'update-packages']
-    default: 'null'
+    enum: ['default', 'update-packages']
+    default: 'default'
 
 jobs:
   build:
@@ -43,6 +43,8 @@ workflows:
               ignore: master
 
   master:
+    when:
+      equal: [<< pipeline.parameters.remote_trigger >>, 'default']
     jobs:
       - build:
           filters:

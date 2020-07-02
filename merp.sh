@@ -41,13 +41,25 @@ git commit -a -m "Bumps @rbilabs to $version" || {
 # Clean up old branches that are now out of date
 # Github will automatically close the PR when the remote branch is deleted
 echo "Removing older branches"
+
+function check_delete {
+  read -r branch
+  echo "Found $branch"
+  count=$(git rev-list --count "$branch" ^HEAD)
+  if [ "$count" -eq 1 ]; then
+    echo "Deleting $branch"
+    git push origin -d "$branch"
+  else 
+    echo "Branch has extraneous commits. Ignoring."
+  fi
+}
+
 branch=$(git for-each-ref --format='%(refname:short)' "refs/remotes/origin/$prefix" | head -1)
 if [ -z "$branch" ]; then 
   echo "No out of date branches found"
 else
   echo "Out of date branch(es) found"
-  # TODO: check for commit counts
-  git for-each-ref --format='%(refname:lstrip=3)' "refs/remotes/origin/$prefix" | xargs git push origin -d
+  git for-each-ref --format='%(refname:lstrip=3)' "refs/remotes/origin/$prefix" | check_delete
 fi
 
 # Create a pull request for the changes

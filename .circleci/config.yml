@@ -1,0 +1,50 @@
+version: 2.1
+
+# Pipeline workflow parameters
+parameters:
+  remote_trigger:
+    type: enum
+    enum: ['null', 'update-packages']
+    default: 'null'
+
+jobs:
+  build:
+    docker:
+      - image: alpine
+    steps:
+      - run: echo "build"
+  pr:
+    docker:
+      - image: alpine
+    steps:
+      - run: echo "pr"
+  update-packages:
+    docker:
+      - image: alpine
+    steps:
+      - run: echo "updating packages"
+
+# Workflows
+workflows:
+  update packages:
+    when:
+      equal: [<< pipeline.parameters.remote_trigger >>, 'update-packages']
+    jobs:
+      - update-packages:
+          filters:
+            branches:
+              ignore: /.*/
+
+  pull-request:
+    jobs:
+      - pr:
+          filters:
+            branches:
+              ignore: master
+
+  master:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master

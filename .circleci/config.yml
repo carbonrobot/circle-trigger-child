@@ -33,7 +33,7 @@ workflows:
       - update-packages:
           filters:
             branches:
-              ignore: /.*/
+              only: master
 
   pull-request:
     jobs:

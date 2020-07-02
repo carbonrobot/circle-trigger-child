@@ -85,8 +85,6 @@ jobs:
             - '88:01:68:9f:70:59:06:5b:3d:40:42:87:6a:bb:63:cf'
       - run: |
           echo "//npm.pkg.github.com/:_authToken=$GH_NPM_TOKEN" > ~/.npmrc
-          git config --global user.email "carbonrobot@gmail.com"
-          git config --global user.name "carbonrobot"
           ~/project/merp.sh << pipeline.parameters.version >>
 
   automerge:
@@ -98,8 +96,6 @@ jobs:
           fingerprints:
             - '88:01:68:9f:70:59:06:5b:3d:40:42:87:6a:bb:63:cf'
       - run: |
-          git config --global user.email "carbonrobot@gmail.com"
-          git config --global user.name "carbonrobot"
           git checkout master
           git merge $CIRCLECI_BRANCH
           git push

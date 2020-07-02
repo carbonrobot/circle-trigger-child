@@ -14,6 +14,8 @@ version=$1
 # prefix for all pull requests so we can manage
 # prs created by this script without affecting anyone else
 prefix="rbibot/rbilabs"
+git config --global user.email circleci@circleci
+git config --global user.name CircleCI
 
 if [ -z "$version" ]; then
   echo "Version required as first positional param. Exiting!"

@@ -1,0 +1,11 @@
+{
+  "name": "circle-trigger-child",
+  "version": "1.0.0",
+  "scripts": {
+    "update-packages": "yarn upgrade --scope @rbilabs --latest"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@rbilabs/common": "7.1.0"
+  }
+}

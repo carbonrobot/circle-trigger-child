@@ -26,6 +26,7 @@ jobs:
     docker:
       - image: alpine
     steps:
+      - checkout
       - run: ~/project/merp.sh << pipeline.parameters.version >>
 
   automerge:

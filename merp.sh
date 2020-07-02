@@ -45,7 +45,7 @@ echo "Removing older branches"
 function check_delete {
   read -r branch
   echo "Found $branch"
-  count=$(git rev-list --count "$branch" ^HEAD)
+  count=$(git rev-list --count "origin/$branch" ^HEAD)
   if [ "$count" -eq 1 ]; then
     echo "Deleting $branch"
     git push origin -d "$branch"

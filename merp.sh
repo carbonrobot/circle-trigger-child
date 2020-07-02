@@ -1,8 +1,8 @@
 #! /bin/bash -e
 
 # env secrets
-CIRCLE_PROJECT_REPONAME:-circle-trigger-child
-CIRCLE_PROJECT_USERNAME:-carbonrobot
+CIRCLE_PROJECT_REPONAME=circle-trigger-child
+CIRCLE_PROJECT_USERNAME=carbonrobot
 
 # configuration
 reponame=${CIRCLE_PROJECT_REPONAME}
@@ -36,6 +36,18 @@ git commit -a -m "Bumps @rbilabs to $version" || {
   exit 0
 }
 
+# Clean up old branches that are now out of date
+# Github will automatically close the PR when the remote branch is deleted
+echo "Removing older branches"
+branch=$(git for-each-ref --format='%(refname:short)' "refs/remotes/origin/$prefix" | head -1)
+if [ -z "$branch" ]; then 
+  echo "No out of date branches found"
+else
+  echo "Out of date branch(es) found"
+  # TODO: check for commit counts
+  git for-each-ref --format='%(refname:lstrip=3)' "refs/remotes/origin/$prefix" | xargs git push origin -d
+fi
+
 # Create a pull request for the changes
 echo "Creating pull request for $prefix/$version"
 git push -u origin "$prefix/$version"
@@ -60,17 +72,3 @@ if [ "$pull_request_url" == "null" ]; then
 fi
 
 echo "Pull request $pull_request_url"
-
-# Clean up old branches that are now out of date
-# Github will automatically close the PR when the remote branch is deleted
-echo "Removing older branches"
-branch=$(git for-each-ref --format='%(refname:short)' "refs/remotes/origin/$prefix" | head -1)
-if [ -z "$branch" ]; then 
-  echo "No out of date branches found"
-else
-  echo "Out of date branch(es) found"
-  # TODO: check for commit counts
-  git for-each-ref --format='%(refname:lstrip=3)' "refs/remotes/origin/$prefix" | xargs git push origin -d
-fi
-
-echo "Updates complete"

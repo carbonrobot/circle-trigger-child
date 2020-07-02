@@ -10,6 +10,59 @@ parameters:
     type: string
     default: ''
 
+########################################
+#
+# 1. The packages repository makes an API call to trigger the 
+# "update-packages" workflow
+# 2. This workflow runs the ./merp script which will be embedded
+# into our docker images
+# 3. Merp runs "yarn update-packages"
+# 4. If there are any changes, it deletes any existing rbibot/rbilabs branches
+# 5. Then creates a new one with updates
+# 6. Creating a PR triggers the normal "pull-request" flow like usual
+# 7. At the end of the PR flow, if everything passes and the branch was created by rbibot
+# 8. We automerge the PR by merging the branch. GH auto closes the PR
+#
+########################################
+workflows:
+  # only executes on a remote trigger
+  update-packages:
+    when:
+      equal: [<< pipeline.parameters.remote_trigger >>, 'update-packages']
+    jobs:
+      - update-packages:
+          filters:
+            branches:
+              only: master
+
+  # executes on a pull request
+  # calls "automerge" if all jobs pass
+  # and only on rbibot branches
+  pull-request:
+    jobs:
+      - pr:
+          filters:
+            branches:
+              ignore: master
+      - automerge:
+          filters:
+            branches:
+              only:
+                - /^rbibot\/rbilabs\/.*/
+          requires:
+            - pr
+
+  # master branch ignores non-default remote triggers
+  master:
+    when:
+      equal: [<< pipeline.parameters.remote_trigger >>, 'default']
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+
+# Jobs
 jobs:
   build:
     docker:
@@ -38,37 +91,3 @@ jobs:
           git checkout master
           git merge $CIRCLECI_BRANCH
           git push
-
-# Workflows
-workflows:
-  update-packages:
-    when:
-      equal: [<< pipeline.parameters.remote_trigger >>, 'update-packages']
-    jobs:
-      - update-packages:
-          filters:
-            branches:
-              only: master
-
-  pull-request:
-    jobs:
-      - pr:
-          filters:
-            branches:
-              ignore: master
-      - automerge:
-          filters:
-            branches:
-              only:
-                - /^rbibot\/rbilabs\/.*/
-          requires:
-            - pr
-
-  master:
-    when:
-      equal: [<< pipeline.parameters.remote_trigger >>, 'default']
-    jobs:
-      - build:
-          filters:
-            branches:
-              only: master

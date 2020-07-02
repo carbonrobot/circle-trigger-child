@@ -24,7 +24,7 @@ jobs:
 
   update-packages:
     docker:
-      - image: alpine
+      - image: circleci/nodejs
     steps:
       - checkout
       - run: ~/project/merp.sh << pipeline.parameters.version >>

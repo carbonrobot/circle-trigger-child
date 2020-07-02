@@ -43,15 +43,16 @@ git commit -a -m "Bumps @rbilabs to $version" || {
 echo "Removing older branches"
 
 function check_delete {
-  read -r branch
-  echo "Found $branch"
-  count=$(git rev-list --count "origin/$branch" ^HEAD)
-  if [ "$count" -eq 1 ]; then
-    echo "Deleting $branch"
-    git push origin -d "$branch"
-  else 
-    echo "Branch has extraneous commits. Ignoring."
-  fi
+  while read -r branch; do
+    echo "Found $branch"
+    count=$(git rev-list --count "origin/$branch" ^HEAD)
+    if [ "$count" -eq 1 ]; then
+      echo "Deleting $branch"
+      git push origin -d "$branch"
+    else 
+      echo "Branch has extraneous commits. Ignoring."
+    fi
+  done
 }
 
 branch=$(git for-each-ref --format='%(refname:short)' "refs/remotes/origin/$prefix" | head -1)
